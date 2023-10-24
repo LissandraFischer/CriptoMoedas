@@ -26,7 +26,21 @@ export function Home (){
             .then(response => response.json())
             .then((data)=>{
                 let coinsData = data.coins.slice(0,15);
-                console.log(coinsData);
+                
+                let price = Intl.NumberFormat ("pt-BR",{
+
+                    style: "currency",
+                    currency:"BRL"
+                })
+                const FormatResult = coinsData.map((item) => {
+                    const formated={
+                        ...item,
+                        formatedPrice:price.format(Number(item.price)),
+                        formatedMarket:price.format(Number(item.market_cap))
+                    }
+                    return formated;
+                })
+                setCoins(FormatResult);
             })
         }
 
@@ -63,6 +77,7 @@ export function Home (){
                 </thead>
 
                 <tbody id="tbody">
+                    {coins.map( coin => (
                     <tr className={styles.tr}>
                         <td className={styles.tdLabel} data-label="Moeda">
                             <Link  className={styles.link} to="/detail/btc">
@@ -79,7 +94,7 @@ export function Home (){
                             <span> -5.3</span>
                         </td>
                     </tr>
-
+                    ))}
                 </tbody>
 
             </table>
