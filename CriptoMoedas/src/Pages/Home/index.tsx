@@ -13,6 +13,8 @@ interface CoinProps{
     symbol: string;
     volume_24h: string;
     market_cap: string;
+    formatedPrice: string;
+    formatedMarket: string;
 }
 
 
@@ -78,20 +80,20 @@ export function Home (){
 
                 <tbody id="tbody">
                     {coins.map( coin => (
-                    <tr className={styles.tr}>
+                    <tr key={coin.name} className={styles.tr}>
                         <td className={styles.tdLabel} data-label="Moeda">
                             <Link  className={styles.link} to="/detail/btc">
-                                <span>Bitcoin</span> | BTC
+                                <span>{coin.name}</span> | {coin.symbol}
                             </Link>
                         </td>
-                        <td className={styles.tdLabel}>
-                            R$19293
+                        <td className={styles.tdLabel} data-label="Mercado">
+                           {coin.formatedMarket}
                         </td>
-                        <td className={styles.tdLabel}>
-                            R$40.962
+                        <td className={styles.tdLabel} data-label="Preço">
+                            {coin.formatedPrice}
                         </td>
-                        <td className={styles.tdLoss}>
-                            <span> -5.3</span>
+                        <td className={Number(coin?.delta_24h) >= 0? styles.tdProfit : styles.tdLoss} data-label="delta_24h">
+                            <span> {coin.delta_24h}</span>
                         </td>
                     </tr>
                     ))}
