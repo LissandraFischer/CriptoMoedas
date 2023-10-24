@@ -1,7 +1,7 @@
-import {useEffect, useState} from 'react'
+import {useEffect, useState, FormEvent} from 'react'
 import styles from "./home.module.css"
 import { HiMiniMagnifyingGlass } from "react-icons/hi2";
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 
 
 //https://sujeitoprogramador.com/api-cripto/?key=cc333fdc79bbecb8
@@ -21,6 +21,8 @@ interface CoinProps{
 export function Home (){
 
     const [coins, setCoins] = useState<CoinProps[]>([])
+    const [inputValue, setInputValue] = useState("")
+    const navigate = useNavigate();
 
     useEffect(()=>{
         async function getData() {
@@ -49,14 +51,22 @@ export function Home (){
         getData();
     },[])
 
-
+    function pesquisa(e: FormEvent){
+        e.preventDefault();
+        if(inputValue ==="") return;
+        
+        navigate(`/detail/${inputValue}`)
+        
+    }
 
 
     return(
         <main className={styles.container}>
-            <form className={styles.form}>
+            <form className={styles.form} onSubmit={pesquisa}>
                 <input 
                 placeholder="Digite o simbolo da moeda: BTC.."
+                value={inputValue}
+                onChange={ (e) => setInputValue(e.target.value)}
                 />
                 <button type="submit">
                 <HiMiniMagnifyingGlass size={30} color="#fff"/>
@@ -82,7 +92,7 @@ export function Home (){
                     {coins.map( coin => (
                     <tr key={coin.name} className={styles.tr}>
                         <td className={styles.tdLabel} data-label="Moeda">
-                            <Link  className={styles.link} to="/detail/btc">
+                            <Link  className={styles.link} to={`/detail/${coin.symbol}`}>
                                 <span>{coin.name}</span> | {coin.symbol}
                             </Link>
                         </td>
