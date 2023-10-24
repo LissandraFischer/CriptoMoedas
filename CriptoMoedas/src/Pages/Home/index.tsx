@@ -6,11 +6,19 @@ import { Link } from "react-router-dom";
 
 //https://sujeitoprogramador.com/api-cripto/?key=cc333fdc79bbecb8
 
+interface CoinProps{
+    name: string;
+    delta_24h: string;
+    price: string;
+    symbol: string;
+    volume_24h: string;
+    market_cap: string;
+}
 
 
 export function Home (){
 
-    const [coins, setCoins] = useState()
+    const [coins, setCoins] = useState<CoinProps[]>([])
 
     useEffect(()=>{
         async function getData() {
