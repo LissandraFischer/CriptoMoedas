@@ -1,5 +1,5 @@
 import style from './detail.module.css'
-import {useParams} from 'react-router-dom'
+import { useNavigate, useParams} from 'react-router-dom'
 import {useEffect, useState} from 'react'
 
 interface CoinProps{
@@ -16,18 +16,27 @@ interface CoinProps{
     formatedMarket: string;
     formatedLowPrice:string;
     formatedHighPrice: string;
+    numberDelta: number;
+    error?: string;
 }
     
 
 
 export function Detail (){
     const {cripto} = useParams();
+    const [detail, setDetail] = useState<CoinProps>();
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() =>{
         function getData(){
             fetch(` https://sujeitoprogramador.com/api-cripto/coin/?key=cc333fdc79bbecb8&symbol=${cripto}`)
             .then(response => response.json())
-            .then((data:CoinProps) => {
+            .then((data: CoinProps) => {
+
+                if(data.error){
+                    navigate("/")
+                }
 
                 let price = Intl.NumberFormat ("pt-BR",{
 
@@ -41,18 +50,54 @@ export function Detail (){
                     formatedMarket: price.format(Number(data.market_cap)),
                     formatedLowPrice: price.format(Number(data.low_24h)),
                     formatedHighPrice: price.format(Number(data.high_24h)),
+                    numberDelta: parseFloat(data.delta_24h.replace(",","."))
 
                 }
-                console.log(resultData);
+                setDetail(resultData);
+                setLoading(false);
 
             })
         }
         getData();
     },[cripto])
 
+    if(loading){
+        return(
+            <div className={style.container}>
+                <h4 className={style.center}> Carregando Informações...</h4>
+
+            </div>
+        )
+    }
+
+
     return(
-        <div>
-            <h1>Pagina de detalhes {cripto}</h1>
+        <div className={style.container}>
+           <h1 className={style.center}>{detail?.name}</h1>
+           <p className={style.center}>{detail?.symbol}</p>
+            
+            <section className={style.content}>
+
+                <p>
+                    <strong>Preço</strong> {detail?.formatedPrice}
+                </p>
+
+                <p>
+                    <strong>Maior Preço 24h</strong> {detail?.formatedHighPrice}
+                </p>
+                <p>
+                    <strong>Menor Preço 24h</strong> {detail?.formatedLowPrice}
+                </p>
+                <p>
+                    <strong>Delta 24h</strong> 
+                    <span className={detail?.numberDelta && detail?.numberDelta>=0 ? style.profit : style.loss}> {detail?.delta_24h} </span>
+                </p>
+                <p>
+                    <strong>Valor mercado: </strong> {detail?.formatedMarket}
+                </p>
+
+            </section>
+
         </div>
     )
 }
