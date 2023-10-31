@@ -40,7 +40,7 @@ export function Detail (){
                     formatedPrice: price.format(Number(data.price)),
                     formatedMarket: price.format(Number(data.market_cap)),
                     formatedLowPrice: price.format(Number(data.low_24h)),
-                    formatedHighPrice: price.format(Number(data.high_24h_24h)),
+                    formatedHighPrice: price.format(Number(data.high_24h)),
 
                 }
                 console.log(resultData);
